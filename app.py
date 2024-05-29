@@ -1,5 +1,5 @@
 from flask import Flask, request, redirect, render_template
-from transbank.webpay.webpay_plus.transaction import Transaction, WebpayOptions
+from transbank.webpay.webpay_plus.transaction import Transaction, WebpayOptions, IntegrationCommerceCodes, IntegrationApiKeys
 from transbank.common.integration_type import IntegrationType
 
 app = Flask(__name__)
@@ -12,6 +12,8 @@ api_key = '579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C'  # 
 options = WebpayOptions(commerce_code, api_key, IntegrationType.TEST)
 transaction = Transaction(options)
 
+global return_url
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -21,11 +23,12 @@ def pagar():
     amount = request.form['amount']
     buy_order = 'orden12345678'
     session_id = 'session12345678'
-    return_url = 'http://localhost:5000/return-url'
+    return_url = 'http://localhost:5000/resultado'
+    tx = Transaction(WebpayOptions(IntegrationCommerceCodes.WEBPAY_PLUS, IntegrationApiKeys.WEBPAY, IntegrationType.TEST))
+    response = tx.create(buy_order, session_id, amount, return_url)
 
-    response = transaction.create(buy_order, session_id, amount, return_url)
     return redirect(response['url'] + '?token_ws=' + response['token'])
-
+    #redirect(response['url'] + '?token_ws=' + response['token'])
 @app.route('/return-url', methods=['POST'])
 def return_url():
     token_ws = request.form['token_ws']
@@ -37,3 +40,6 @@ def return_url():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+

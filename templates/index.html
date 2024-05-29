@@ -7,10 +7,14 @@
 </head>
 <body>
     <h1>Pago con Webpay Plus</h1>
-    <form action="/pagar" method="post">
+    <form method="post" action="{{response['url']}}">
+        <input type="hidden" name="token_ws" value="{{respose['token']}}" />
+        <input type="submit" value="Ir a pagar" />
+    </form>
+    <!-- <form action="/pagar" method="post">
         <label for="amount">Monto:</label>
         <input type="text" id="amount" name="amount" value="10000">
         <button type="submit">Pagar</button>
-    </form>
+    </form> -->
 </body>
 </html>
