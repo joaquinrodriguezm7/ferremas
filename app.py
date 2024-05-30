@@ -2,6 +2,7 @@ from transbank.webpay.webpay_plus.transaction import Transaction, WebpayOptions
 from transbank.common.integration_type import IntegrationType
 from quart import Quart, request, jsonify, redirect, render_template
 import logging
+import httpx
 
 app = Quart(__name__)
 
@@ -11,10 +12,23 @@ api_key = '579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C'
 options = WebpayOptions(commerce_code, api_key, IntegrationType.TEST)
 transaction = Transaction(options)
 
+API_BASE_URL = 'http://localhost:8000/api/'
 
 @app.route('/')
 async def index():
-    return await render_template('index.html')
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(API_BASE_URL + 'producto/')  # Endpoint de productos
+
+        if response.status_code == 200:
+            productos = response.json()
+            return await render_template('index.html', productos=productos)
+        else:
+            return await jsonify({"error": "Error al obtener productos de la API de Django"}), response.status_code
+    except httpx.HTTPError as http_err:
+        return await jsonify({"error": f"HTTP error occurred: {http_err}"})
+    except Exception as err:
+        return jsonify({"error": f"Error occurred: {err}"}), 500
 
 @app.route('/createWebpayTransaction', methods=['POST'])
 async def create_webpay_transaction():

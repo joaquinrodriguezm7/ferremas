@@ -4,13 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pagar con Transbank</title>
+    <script>
+        function comprarProducto(valorProducto) {
+            document.getElementById('amount').value = valorProducto;
+            document.getElementById('paymentForm').submit();
+        }
+    </script>
 </head>
 <body>
     <h1>Pago con Webpay Plus</h1>
     
-    <form action="/createWebpayTransaction" method="post">
+    {% for producto in productos%}
+        <hr>
+        <p>{{ producto.nombre_producto}}</p>
+        <p>Valor: {{ producto.valor_producto}}</p>
+        <p>Stock: {{ producto.cantidad_stock}}</p>
+        <button type="button" onclick="comprarProducto({{ producto.valor_producto }})">Comprar</button>
+    {% endfor %}
+    
+    <form id="paymentForm" action="/createWebpayTransaction" method="post" style="display: none;">
         <label for="amount">Monto:</label>
-        <input type="text" id="amount" name="amount" value="10000">
+        <input type="text" id="amount" name="amount">
         <button type="submit">Pagar</button>
     </form>
 </body>
