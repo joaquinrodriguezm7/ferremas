@@ -1,45 +1,52 @@
-from flask import Flask, request, redirect, render_template
-from transbank.webpay.webpay_plus.transaction import Transaction, WebpayOptions, IntegrationCommerceCodes, IntegrationApiKeys
+from transbank.webpay.webpay_plus.transaction import Transaction, WebpayOptions
 from transbank.common.integration_type import IntegrationType
+from quart import Quart, request, jsonify, redirect, render_template
+import logging
 
-app = Flask(__name__)
+app = Quart(__name__)
 
-# Configuración de prueba
-commerce_code = '597055555532'  # Código de comercio de prueba
-api_key = '579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C'  # API Key de prueba
+commerce_code = '597055555532' 
+api_key = '579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C'  
 
-# Configurar el SDK de Transbank para entorno de prueba
 options = WebpayOptions(commerce_code, api_key, IntegrationType.TEST)
 transaction = Transaction(options)
 
-global return_url
 
 @app.route('/')
-def index():
-    return render_template('index.html')
+async def index():
+    return await render_template('index.html')
 
-@app.route('/pagar', methods=['POST'])
-def pagar():
-    amount = request.form['amount']
+@app.route('/createWebpayTransaction', methods=['POST'])
+async def create_webpay_transaction():
+    
+    form = await request.form
+    amount = form['amount']
+    
     buy_order = 'orden12345678'
     session_id = 'session12345678'
-    return_url = 'http://localhost:5000/resultado'
-    tx = Transaction(WebpayOptions(IntegrationCommerceCodes.WEBPAY_PLUS, IntegrationApiKeys.WEBPAY, IntegrationType.TEST))
-    response = tx.create(buy_order, session_id, amount, return_url)
+    return_url = 'http://localhost:5000/getWebpayReturn'
+    
+    try:
+        response = transaction.create(buy_order, session_id, amount, return_url)
+        return redirect(response['url'] + '?token_ws=' + response['token'])
+    except Exception as error:
+        logging.error('Error creating Webpay transaction: %s', error)
+        return jsonify({"error": "Error creating Webpay transaction"}), 500
 
-    return redirect(response['url'] + '?token_ws=' + response['token'])
-    #redirect(response['url'] + '?token_ws=' + response['token'])
-@app.route('/return-url', methods=['POST'])
-def return_url():
-    token_ws = request.form['token_ws']
-    response = transaction.commit(token_ws)
-    if response['response_code'] == 0:
-        return "Pago exitoso"
-    else:
-        return "Pago rechazado"
+@app.route('/getWebpayReturn', methods=['GET'])
+async def get_webpay_return():
+    token_ws = request.args.get('token_ws')
 
+    if not token_ws:
+        return jsonify({"error": "token_ws es requerido"}), 400
+
+    try:
+        commit_response = transaction.commit(token_ws)
+        return jsonify(commit_response)
+    except Exception as error:
+        logging.error('Error handling Webpay return: %s', error)
+        return jsonify({"error": "Error handling Webpay return"}), 500
+    
 if __name__ == '__main__':
     app.run(debug=True)
-
-
 
