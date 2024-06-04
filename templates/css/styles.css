@@ -1,0 +1,25 @@
+.nav {
+    background-color: black;
+    padding: 20px;
+}
+
+h1 {
+    margin-left: 20px;
+    margin-top: 50px;
+    color: #da8c3d ;
+}
+
+.img {
+    width: 200px;
+    height: 200px;
+}
+
+.img-logo {
+    width: 150px;
+}
+
+.footer {
+    background-color: black;
+    padding: 30px;
+    margin-top: 140px;
+}
