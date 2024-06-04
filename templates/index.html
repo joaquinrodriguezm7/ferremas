@@ -26,6 +26,15 @@
     </nav>
     
     <!-- {% for producto in productos%} -->
+    <form method="POST" action="/">
+        <label for="conversion">Divisa: </label>
+        <select name="conversion" id="conversion">
+            <option value="clp">Peso Chileno</option>
+            <option value="dolar">Dólar</option>
+            <option value="euro">Euro</option>
+        </select>
+        <input type="submit" value="Seleccionar">
+    </form>
 
         <div class="container">
             <div class="row text-center">
@@ -55,7 +64,8 @@
         </div>
     <!-- {% endfor %} -->
     
-    <form id="paymentForm" action="/createWebpayTransaction" method="post" style="display: none;">
+    
+    <form id="paymentForm" action="/createWebpayTransaction" method="post" style="display: none;" name="pago_form">
         <label for="amount">Monto:</label>
         <input type="text" id="amount" name="amount">
         <button type="submit">Pagar</button>
