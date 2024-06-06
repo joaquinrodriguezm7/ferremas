@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" 
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" 
+    crossorigin="anonymous">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>Document</title>
+
+</head>
+<body>
+    <a href="/producto">← Volver a productos</a>
+    <h1 class="text-center">ELIMINAR PRODUCTO</h1>
+    <form method="POST" action="">
+        <div class="container">
+            <div class="row text-center">
+                {% for producto in productos%}
+                <div class="col-md-4">
+                    <br><br><br><br><br><br>
+                    <p>ID: {{ producto.id_producto}}</p>
+                    <p>NOMBRE DE PRODUCTO: {{ producto.nombre_producto }}</p>
+                    <p>VALOR: {{ producto.valor_producto }}</p>
+                    <p>DESCRIPCIÓN: {{ producto.descripcion_producto }}</p>
+                    <p>TIPO DE PRODUCTO: {{ producto.tipo_producto }}</p>
+                    <p>STOCK: {{ producto.cantidad_stock}}</p>
+                    <button type="submit" id="id_producto" name="id_producto" value="{{ producto.id_producto }}">Eliminar</button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </form>
+</body>
+</html>

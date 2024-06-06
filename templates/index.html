@@ -22,9 +22,9 @@
     <form method="POST" action="/" onsubmit="guardarSeleccion()">
         <label for="conversion">Divisa: </label>
         <select name="conversion" id="conversion">
-            <option class="btn" value="clp" selected>Peso Chileno</option>
-            <option class="btn" value="dolar">Dólar</option>
-            <option class="btn" value="euro">Euro</option>
+            <option value="clp" selected>CLP | Peso Chileno</option>
+            <option value="dolar">USD | Dólar estadounidense</option>
+            <option value="euro">Euro | Euro europeo</option>
         </select>
         <input class="btn" type="submit" value="Seleccionar">
     </form>
@@ -48,12 +48,7 @@
         <div class="row text-center">
             {% for producto in productos%}
             <div class="col-md-4">
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
+                <br><br><br><br><br><br>
                 <p>{{ producto.nombre_producto}}</p>
                 <p id="valor_producto">Valor: {{ (producto.valor_producto / valor) | round(1)}}</p>
                 <p>Stock: {{ producto.cantidad_stock}}</p>
@@ -63,14 +58,11 @@
         </div>
     </div>
 
-    <form id="paymentForm" action="/createWebpayTransaction" method="post" style="display: none;" name="pago_form">
-        <label for="amount">Monto:</label>
-        <input type="text" id="amount" name="amount">
-        <button type="submit">Pagar</button>
-    </form>
+    
     
     <footer class="footer bg-black text-white text-center py-3">
          &copy; 2024 Ferremas. Todos los derechos reservados.
+         <a href="/producto">Productos</a>
     </footer>
     
 

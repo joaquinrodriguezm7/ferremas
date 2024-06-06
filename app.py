@@ -81,10 +81,30 @@ async def index():
             return await jsonify({"error": "Error al obtener productos de la API de Django"}), response.status_code
     except httpx.HTTPError as http_err:
         return jsonify({"error": f"HTTP error occurred: {http_err}"})
-    except Exception as err:
-        return jsonify({"error": f"Error occurred: {err}"}), 500
+    except Exception as e:
+        return jsonify({"error": f"Error occurred: {e}"}), 500
 
+@app.route('/producto')
+async def producto():
+    return await render_template('producto.html')
 
+@app.route('/deleteproducto', methods=['GET', 'POST'])
+async def deleteproducto():
+    try:
+        data = await request.form
+        id_producto = data.get('id_producto')
+        async with httpx.AsyncClient() as client:
+            response = await client.get(BDD_API + 'producto/')
+            delete_response = await client.delete(f"{BDD_API}producto/{id_producto}/eliminar")
+        if response.status_code == 200:
+            productos = response.json()
+            if delete_response.status_code == 204:
+                return await render_template('deleteproducto.html', productos=productos)
+            return await render_template('deleteproducto.html', productos=productos)
+        else:
+            return jsonify({"error": "Failed to fetch products"}), response.status_code
+    except Exception as e:
+        return jsonify({"error": f"Error occurred: {e}"}), 500
 
 @app.route('/createWebpayTransaction', methods=['POST'])
 async def create_webpay_transaction():
