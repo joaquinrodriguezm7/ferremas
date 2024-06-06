@@ -23,3 +23,18 @@ h1 {
     padding: 30px;
     margin-top: 140px;
 }
+
+.btn {
+    background-color: #da8c3d;
+    color: black;
+    font-weight: bold;
+}
+
+.btn:hover {
+    background-color: #da8c3d;
+    color: white;
+}
+
+.contenedor {
+    margin-top: 50px;
+}

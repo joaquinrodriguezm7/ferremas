@@ -16,7 +16,7 @@ transaction = Transaction(options)
 
 
 #Variables para API's
-BDD_API = 'http://localhost:8000/api/'
+BDD_API = 'https://0fc9-186-107-46-18.ngrok-free.app/api/'
 api_url= ''
 fecha_hoy = datetime.date.today()
 fecha_formateada = fecha_hoy.strftime("%Y-%m-%d")
