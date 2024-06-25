@@ -8,29 +8,26 @@
     crossorigin="anonymous">
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <title>Eliminar producto - Ferremas</title>
-
+    <title>Modificar producto - Ferremas</title>
 </head>
 <body>
     <a href="/producto">← Volver a productos</a>
-    <h1 class="text-center">ELIMINAR PRODUCTO</h1>
-    <form method="POST" action="">
+    <h1 class="text-center">Modificar Producto</h1>
         <div class="container">
             <div class="row text-center">
                 {% for producto in productos%}
                 <div class="col-md-4">
                     <br><br><br><br><br><br>
-                    <p>ID: {{ producto.id_producto}}</p>
-                    <p>NOMBRE DE PRODUCTO: {{ producto.nombre_producto }}</p>
-                    <p>VALOR: {{ producto.valor_producto }}</p>
-                    <p>DESCRIPCIÓN: {{ producto.descripcion_producto }}</p>
-                    <p>TIPO DE PRODUCTO: {{ producto.tipo_producto }}</p>
-                    <p>STOCK: {{ producto.cantidad_stock}}</p>
-                    <button type="submit" id="id_producto" name="id_producto" value="{{ producto.id_producto }}">Eliminar</button>
+                    <form action="" method="POST">
+                        <p>ID: {{ producto.id_producto}}</p>
+                        <p>NOMBRE DE PRODUCTO: {{ producto.nombre_producto }}</p>
+                        <input type="hidden" name="id_producto" id="id_producto" value="{{ producto.id_producto }}">
+                        <input type="hidden" name="nombre_producto" id="nombre_producto" value="{{ producto.nombre_producto }}">
+                        <button type="submit" name="submit_button">Elegir Producto</button>
+                    </form>
                 </div>
                 {% endfor %}
             </div>
         </div>
-    </form>
 </body>
 </html>

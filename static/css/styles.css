@@ -1,3 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
+
+/* Definir estilos generales */
+body {
+    font-family: 'Lato', sans-serif;
+    line-height: 1.6;
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+}
+
+html, body{
+    margin:0;
+    padding:0;
+    height:100%;
+}
+
 .nav {
     background-color: black;
     padding: 20px;
@@ -21,7 +38,7 @@ h1 {
 .footer {
     background-color: black;
     padding: 30px;
-    margin-top: 140px;
+    margin-top:250px;
 }
 
 .btn {
@@ -37,4 +54,86 @@ h1 {
 
 .contenedor {
     margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.align-table{
+    display: flex;
+    justify-content: center;
+    margin:20px 0;
+}
+
+.align-table td {
+    padding: 5px 8px;
+}
+.align-table .label {
+    font-weight: bold;
+    text-align: right;
+}
+.align-table .value {
+    text-align: left;
+}
+
+.auth-title{
+    display: flex;
+    justify-content: center;
+    margin:30px 0;
+    font-size:25px;
+    font-weight: bold;
+    color:#333333;
+}
+
+.auth-hr{
+    width: 100%;
+    border: 1px solid;
+    border-radius:80%;
+
+}
+.auth-value{
+    text-align: center;
+    margin-top: 1px;
+    margin-bottom: 1px;
+    font-size:25px;
+    font-weight: bold;
+    font-style:italic;
+}
+
+.auth-value-subtitle{
+    text-align: left;
+    margin-top: auto;
+    margin-bottom:5px;
+    font-weight:600;
+}
+
+.value-box{
+    height:fit-content;
+    margin-top:auto;
+}
+
+.check-green {
+    color: green;
+    margin-right:10px;
+}
+
+
+.col-md-6{
+    border:solid lightgray;
+    display:flex;
+    flex-direction:column;
+}
+
+.col-md-4{
+    margin-bottom: 100px;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
