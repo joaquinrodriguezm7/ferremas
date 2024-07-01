@@ -124,7 +124,6 @@ async def create_webpay_transaction():
     session_id = 'session12345678'
     return_url = 'http://localhost:5000/getWebpayReturn'
     nombre_producto = form['nombre_producto']
-    
     productos = nombre_producto.split(',')
 
     session['productos'] = productos
@@ -149,7 +148,7 @@ async def get_webpay_return():
         status=commit_response['status']
         session['status']=status
         session['resultado']=commit_response
-        return redirect('resultado.html')
+        return redirect(url_for('resultado')+f'?status={status}')
     except Exception as error:
         logging.error('Error handling Webpay return: %s', error)
         return jsonify({"error": "Error handling Webpay return", "a":f'error {error}'}), 500
@@ -164,7 +163,8 @@ async def resultado():
     valor=session.get('valor_conversion')
     productos_count = defaultdict(int)
 
-    await actualizar_stock_productos(productos)
+    if status=='AUTHORIZED':
+        await actualizar_stock_productos(productos)
 
     for producto in productos:
         productos_count[producto] += 1
@@ -187,18 +187,27 @@ async def createproducto():
         tipo_producto=data.get('tipo_producto')
 
         create_data={
-                'nombre_producto':nombre_producto,
-                'valor_producto':valor_producto,
-                'descripcion_producto':descripcion_producto,
-                'tipo_producto':tipo_producto
-            }
+            'nombre_producto':nombre_producto,
+            'valor_producto':valor_producto,
+            'descripcion_producto':descripcion_producto,
+            'tipo_producto':tipo_producto
+        }
+
+        create_stock_data={
+            'cantidad_stock':0,
+            'nombre_producto':nombre_producto,
+        }
+
+        print(create_stock_data)
         async with httpx.AsyncClient() as client:
             response_tp = await client.get(BDD_API + 'tipo_producto/')
             response = await client.post(BDD_API + 'producto/agregar', json=create_data)
+            create_response_stock = await client.post(f"{BDD_API}stock/", json=create_stock_data)
         if response_tp.status_code == 200:
             tipo_producto = response_tp.json()
             return await render_template('createproducto.html', tipo_producto=tipo_producto)
-        if response.status_code == 200:
+        
+        if response.status_code == 200 and create_response_stock.status_code == 200:
             return jsonify({"Se ha creado correctamente el producto":f"{response}"})
     except Exception as e:
         return jsonify({"error": f"Error occurred: {e}"}), 500
@@ -218,7 +227,7 @@ async def updateproducto():
         session['id_producto'] = id_producto
         session['nombre_producto'] = nombre_producto
         if "submit_button" in data:
-            return redirect(url_for('update'))
+            return redirect(url_for('update') + '?producto='+nombre_producto)
         return await render_template('updateproducto.html', productos=productos)
     except Exception as e:
         return jsonify({'error':f'Error: {e}'})
@@ -280,8 +289,9 @@ async def deleteproducto():
     except Exception as e:
         return jsonify({"error": f"Error occurred: {e}"}), 500
 
-
-
+@app.route('/prueba')
+async def prueba():
+    return await render_template('prueba.html')
 if __name__ == '__main__':
     app.run(debug=True)
 

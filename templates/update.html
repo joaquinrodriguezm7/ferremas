@@ -9,18 +9,66 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <title>Update - Ferremas</title>
+
+    <style>
+        form {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+        }
+        .btn {
+            background-color: #da8c3d;
+            color: black;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            background-color: #da8c3d;
+            color: white;
+        }
+    </style>
 </head>
 <body>
+    <nav class="nav">
+        <img src="{{ url_for('static', filename='img/logo-ferremas.png') }}" alt="" class="img-logo">
+        <h1>FERREMAS</h1>
+    </nav>
     <a href="/updateproducto">← Volver a productos</a>
-    <form action="" method="POST">
-        {% for p in producto %}
-            <h1 class="text-center">Modificar {{ p.nombre_producto }}</h1>
-            <p>Nombre: <input type="text" name="nombre_producto" id="nombre_producto" value="{{ p.nombre_producto }}" disabled  ></p>
-            <p>Valor: <input type="number" name="valor_producto" id="valor_producto" value="{{ p.valor_producto }}"></p>
-            <p>Descripcion: <input type="text" name="descripcion_producto" id="descripcion_producto" value="{{ p.descripcion_producto }}"></p>
-            <p>Stock: <input type="text" name="cantidad_stock" id="cantidad_stock" value="{{ p.cantidad_stock }}"></p>
-            <button type="submit">Modificar</button>
-        {% endfor %}
-    </form>
+    {% for p in producto %}
+        <h1 class="text-center">Modificar {{ p.nombre_producto }}</h1>
+
+        <form action=""  method="POST" style="margin-top:60px">
+            <div class="form-group">
+                <label for="nombre_producto">Nombre:</label>
+                <input type="text" class="form-control" name="nombre_producto" id="nombre_producto" value="{{ p.nombre_producto }}" disabled>
+            </div>
+            <div class="form-group">
+                <label for="valor_producto">Valor:</label>
+                <input type="number"class="form-control"  name="valor_producto" id="valor_producto" value="{{ p.valor_producto }}" required></p>
+            </div>
+            <div class="form-group">
+                <label for="descripcion_producto">Descripción:</label>
+                <input type="text" class="form-control" name="descripcion_producto" id="descripcion_producto" value="{{ p.descripcion_producto }}" required></p>
+            </div>
+            <div class="form-group">
+                <label for="tipo_producto">Stock:</label>
+                <input type="text" class="form-control" name="cantidad_stock" id="cantidad_stock" value="{{ p.cantidad_stock }}" required>
+            </div>
+            <button type="submit" class="btn">Ingresar</button>
+        </form>
+    {% endfor %}
+    <footer class="footer bg-black text-white text-center py-3" style="bottom:0">
+        &copy; 2024 Ferremas. Todos los derechos reservados.
+        <a href="/">Tienda</a>
+    </footer>
 </body>
 </html>

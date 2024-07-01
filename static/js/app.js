@@ -5,16 +5,61 @@ let webpay_total = 0;
 function comprarProducto() { 
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     let productos = [];
-
+    
     cart.forEach(item => {
         for (let i = 0; i < item.count; i++) {
             productos.push(item.product);
         }
     });
-
+    console.log(productos)
+    if (productos.length === 0){
+        mostrarError();
+    }
+    
     document.getElementById('webpay_total').value = total_amount;
     document.getElementById('nombre_producto').value = productos.join(',');
     document.getElementById('paymentForm').submit();
+}
+
+function mostrarError() {
+    // Verificamos si ya existe un mensaje de error para evitar duplicados
+    if (document.querySelector('.error-message')) {
+        return; // Si ya hay un mensaje de error, no hacemos nada
+    }
+
+    // Creamos un mensaje de error
+    const errorMessage = document.createElement('div');
+    errorMessage.classList.add('error-message');
+    errorMessage.textContent = 'Debes agregar un producto al carrito.';
+
+    // Mostramos el mensaje de error
+    document.getElementById('paymentForm').appendChild(errorMessage);
+}
+
+function eliminarError() {
+    const errorMessage = document.querySelector('.error-message');
+    if (errorMessage) {
+        errorMessage.remove();
+    }
+}
+
+function validarCompra() {
+    let productos = localStorage.getItem('cart');
+    
+    if (!productos || JSON.parse(productos).length === 0) {
+        mostrarError();
+        return false; // Evita que se envíe el formulario
+    }
+
+    eliminarError();
+    
+    // Si hay productos, actualiza los campos ocultos del formulario
+    let total = calcularTotal(); // Debes implementar esta función según tu lógica
+    document.getElementById('webpay_total').value = total;
+    document.getElementById('amount').value = total.toFixed(2);
+    document.getElementById('nombre_producto').value = productos;
+    
+    return true; // Envía el formulario
 }
 
 
@@ -123,5 +168,18 @@ function clearCart() {
     displayCart();
 }
 
+function filtrarProductos() {
+    const buscador = document.getElementById('buscador').value.toLowerCase();
+    const productos = document.querySelectorAll('.col-md-4');
+
+    productos.forEach(producto => {
+        const nombre = producto.getAttribute('data-nombre').toLowerCase();
+        if (nombre.includes(buscador)) {
+            producto.style.display = 'block';
+        } else {
+            producto.style.display = 'none';
+        }
+    });
+}
 
 

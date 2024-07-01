@@ -19,26 +19,35 @@
 <body>
     
     <nav class="nav">
-        <img src="{{ url_for('static', filename='img/logo-ferremas.png') }}" alt="" class="img-logo">
-        <h1>FERREMAS</h1>
+        <div>
+            <img src="{{ url_for('static', filename='img/logo-ferremas.png') }}" alt="" class="img-logo">
+        </div>
+        <div class="container-nav">
+            <h1 class="nav-title">FERREMAS</h1> 
+        </div>
+        <div class="container-buscador">
+            <input type="text" id="buscador" class="form-control" placeholder="Buscar producto por nombre..." onkeyup="filtrarProductos()">
+        </div>
+        <div class="nav-divisa">
+            <form class="nav-divisa-form" method="POST" action="/" onsubmit="guardarSeleccion()">
+                <label class="nav-title text-center" for="conversion" style="color:white;">Divisa: </label>
+                <select name="conversion" id="conversion">
+                    <option value="clp" selected>CLP | Peso Chileno</option>
+                    <option value="dolar">USD | Dólar estadounidense</option>
+                    <option value="euro">Euro | Euro europeo</option>
+                </select>
+                <input class="btn" type="submit" value="Seleccionar" onclick="clearCart()">
+            </form>
+        </div>
     </nav>
     
-    <form method="POST" action="/" onsubmit="guardarSeleccion()">
-        <label for="conversion">Divisa: </label>
-        <select name="conversion" id="conversion">
-            <option value="clp" selected>CLP | Peso Chileno</option>
-            <option value="dolar">USD | Dólar estadounidense</option>
-            <option value="euro">Euro | Euro europeo</option>
-        </select>
-        <input class="btn" type="submit" value="Seleccionar" onclick="clearCart()">
-    </form>
-
-    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
+    
+    <svg style="margin-left:10px; margin-top:10px" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
         <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
-      </svg>
+    </svg>
     <ul id="cart"></ul>
 
-    <form id="paymentForm" method="post" name="pago_form" action="/createWebpayTransaction">
+    <form id="paymentForm" method="post" name="pago_form" action="/createWebpayTransaction" onsubmit="return validarCompra()" style="margin-left:10px">
         {% if tipo_divisa == 'euro' -%}
             <h3>Total: <span id="total">0.00</span> €
         {% elif tipo_divisa == 'dolar' -%}
@@ -52,35 +61,42 @@
         <button type="submit" class="btn" onclick="comprarProducto()">COMPRAR</button>
         </h3>
     </form>
-    
-    <div class="container contenedor">
-        <div class="row text-center">
+
+    <div class="container mt-5">
+        <div class="row">
             {% for producto in productos %}
-            <div class="col-md-4">
-                <p>{{ producto.nombre_producto }}</p>
-                {% if tipo_divisa == 'euro' -%}
-                    <p id="valor_producto">Valor: {{ (producto.valor_producto / valor) | round(2) }}€</p>
-                {% elif tipo_divisa == 'dolar' -%}
-                    <p id="valor_producto">Valor: ${{ (producto.valor_producto / valor) | round(2) }}</p>
-                {% else -%}
-                    <p id="valor_producto">Valor: ${{ (producto.valor_producto / valor) | round(0) | int | format_currency }}</p>
-                {%- endif %}
-                
-                <p>Stock: {{ producto.cantidad_stock }}</p>
-                <label for="quantity_{{ loop.index }}">Cantidad:</label>
-                <input type="number" id="quantity_{{ loop.index }}" min="1" max="9" value="1" oninput="validity.valid||(value='');">
-                <button class="btn" onclick="addToCart('{{ producto.nombre_producto }}', {{ producto.valor_producto }}, 'quantity_{{ loop.index }}')">Añadir al Carrito</button>
-            </div>
+                {% if producto.cantidad_stock >= 1 %}
+                    <div class="col-md-4" data-nombre="{{producto.nombre_producto}}">
+                        <div class="producto">
+                            <h2 style="margin-bottom:20px; text-align: center;">{{ producto.nombre_producto}}</h2>
+                            {% if tipo_divisa == 'euro' -%}
+                                <p id="valor_producto"><strong>Valor: </strong>{{ (producto.valor_producto / valor) | round(2) }}€</p>
+                            {% elif tipo_divisa == 'dolar' -%}
+                                <p id="valor_producto"><strong>Valor: </strong>${{ (producto.valor_producto / valor) | round(2) }}</p>
+                            {% else -%}
+                                <p id="valor_producto"><strong>Valor: </strong>${{ (producto.valor_producto / valor) | round(0) | int | format_currency }}</p>
+                            {%- endif %}
+                            <p><strong>Descripción:</strong> {{ producto.descripcion_producto}}</p>
+                            {% if producto.cantidad_stock == 1%}
+                                <p><strong>Stock:</strong> {{ producto.cantidad_stock }} Producto disponible</p>
+                            {% else %}
+                                <p><strong>Stock:</strong> {{ producto.cantidad_stock }} Productos disponibles</p>
+                            {% endif %}
+                            <label for="quantity_{{ loop.index }}">Cantidad:</label>
+                            <input type="number" id="quantity_{{ loop.index }}" min="1" max="9" value="1" oninput="validity.valid||(value='');">
+                            <button class="btn" onclick="addToCart('{{ producto.nombre_producto }}', {{ producto.valor_producto }}, 'quantity_{{ loop.index }}')">Añadir al Carrito</button>
+                        </div>
+                    </div>
+                {% endif %}
             {% endfor %}
         </div>
     </div>
 
-    <footer class="footer bg-black text-white text-center py-3" style="bottom:0">
+    <footer class="footer bg-black text-white text-center py-3" style="bottom:0;margin-top:100px;">
          &copy; 2024 Ferremas. Todos los derechos reservados.
          <a href="/producto">Productos</a>
     </footer>
-
-
+    
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-vj+7aqkF2y6tIJ4Hc9KnQ0XkcHk5+P1P5CzD44Fw+KG61A0z4+i1KtxK6cCExnKz" crossorigin="anonymous"></script>
 </body>

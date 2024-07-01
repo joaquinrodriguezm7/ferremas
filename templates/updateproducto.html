@@ -11,16 +11,20 @@
     <title>Modificar producto - Ferremas</title>
 </head>
 <body>
+    <nav class="nav">
+        <img src="{{ url_for('static', filename='img/logo-ferremas.png') }}" alt="" class="img-logo">
+        <h1>FERREMAS</h1>
+    </nav>
     <a href="/producto">← Volver a productos</a>
     <h1 class="text-center">Modificar Producto</h1>
         <div class="container">
-            <div class="row text-center">
+            <div class="row text-center" style="margin-top:100px">
                 {% for producto in productos%}
                 <div class="col-md-4">
-                    <br><br><br><br><br><br>
                     <form action="" method="POST">
                         <p>ID: {{ producto.id_producto}}</p>
                         <p>NOMBRE DE PRODUCTO: {{ producto.nombre_producto }}</p>
+                        <p>STOCK: {{ producto.cantidad_stock }}</p>
                         <input type="hidden" name="id_producto" id="id_producto" value="{{ producto.id_producto }}">
                         <input type="hidden" name="nombre_producto" id="nombre_producto" value="{{ producto.nombre_producto }}">
                         <button type="submit" name="submit_button">Elegir Producto</button>
@@ -29,5 +33,10 @@
                 {% endfor %}
             </div>
         </div>
+    
+    <footer class="footer bg-black text-white text-center py-3" style="bottom:0; margin-top: 50px;">
+        &copy; 2024 Ferremas. Todos los derechos reservados.
+        <a href="/">Tienda</a>
+    </footer>
 </body>
 </html>
